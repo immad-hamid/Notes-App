@@ -1,87 +1,33 @@
-const chalk = require('chalk');
-const yargs = require('yargs');
+const chalk = require("chalk");
+const yargs = require("yargs");
+const fs = require("fs");
 const log = console.log;
+const helperMethods = require("./utils");
 
-const add = require('./utils');
-const getNotes = require('./notes');
+const file = "1-json.json";
+const dataBuffer = fs.readFileSync(file);
+let dataJson = JSON.parse(dataBuffer.toString());
 
-yargs.version('1.1.0');
-
-// adding notes
+// change name & age
 yargs.command({
-    command: 'add',
-    describe: 'Adding Notes',
-    builder: {
-        title: {
-            describe: 'Note Title',
-            demandOption: true,
-            type: 'string'
-        },
-        body: {
-            describe: 'Note Body',
-            demandOption: true,
-            type: 'string'
-        }
+  command: "change",
+  describe: "Changing name and age!!!",
+  builder: {
+    name: {
+      demandOption: true,
+      type: "string"
     },
-    handler: (argv) => log(chalk.green.inverse(`\n${argv.title}\n\n${argv.body}`))
-});
+    age: {
+      demandOption: true,
+      type: "number"
+    }
+  },
+  handler: argv => {
+    const change = helperMethods.changeInfo(dataJson, argv);
+    const result = helperMethods.writeFile(file, change);
 
-// remove notes
-yargs.command({
-    command: 'remove',
-    describe: 'Remove Notes',
-    builder: {
-        title: {
-            describe: 'Note Title',
-            demandOption: true,
-            type: 'string'
-        },
-        body: {
-            describe: 'Note Body',
-            demandOption: true,
-            type: 'string'
-        }
-    },
-    handler: (argv) => log(chalk.red.inverse(`\n${argv.title}\n\n${argv.body}`))
+    result ? log(chalk.green(`Success`)) : log(chalk.red(`Fail`));
+  }
 });
-
-// list notes
-yargs.command({
-    command: 'list',
-    describe: 'List Notes',
-    builder: {
-        title: {
-            describe: 'Note Title',
-            demandOption: true,
-            type: 'string'
-        },
-        body: {
-            describe: 'Note Body',
-            demandOption: true,
-            type: 'string'
-        }
-    },
-    handler: (argv) => log(chalk.blue.inverse(`\n${argv.title}\n\n${argv.body}`))
-});
-
-// read notes
-yargs.command({
-    command: 'read',
-    describe: 'Read Notes',
-    builder: {
-        title: {
-            describe: 'Note Title',
-            demandOption: true,
-            type: 'string'
-        },
-        body: {
-            describe: 'Note Body',
-            demandOption: true,
-            type: 'string'
-        }
-    },
-    handler: (argv) => log(chalk.white.inverse(`\n${argv.title}\n\n${argv.body}`))
-});
-
 
 yargs.parse();
