@@ -2,15 +2,23 @@ const fs = require("fs");
 
 const helperMethods = {
   changeInfo: (obj, arg) => {
-    obj["name"] = arg.name;
-    obj["age"] = arg.age;
-    return obj;
+    try {
+      obj["name"] = arg.name;
+      obj["age"] = arg.age;
+      return obj;
+    } catch (e) {
+      return false;
+    }
   },
 
   writeFile: (file, data) => {
-    const dataToStr = JSON.stringify(data);
-    fs.writeFileSync(file, dataToStr);
-    return true;
+    try {
+      const dataToStr = JSON.stringify(data);
+      fs.writeFileSync(file, dataToStr);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 };
 
